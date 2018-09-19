@@ -50,24 +50,6 @@ m0 <- glm(Stellung ~  1, data = gen, family = binomial)
 anova(m1, m0, test = "Chisq")
 
 
-
-
-m0.2 <- glmer(Stellung ~ Eigenname + (1 | doc),
-              data = gen,
-              family = binomial)
-
-anova(m, m0.2)
-anova(m0.1, m0.2)
-
-afex::mixed(Stellung ~ wordcount + Eigenname + (1 | doc),
-            data = gen, family = binomial, method = "LRT")
-
-
-# Modelldiagnostik: Somers' Dxy
-library(Hmisc)
-somers2()
-
-
 # Die vorhergesagten Werte (fitted values) lassen sich
 # mit zwei Funktionen anzeigen: fitted() und predict().
 # Bei generalisierten linearen Modellen besteht ein wichtiger
@@ -91,12 +73,28 @@ fitted(m)
 # siehe auch:
 plot(predict(m), fitted(m)) # Die typische Sigmoidform
 
-# 
 
 
 
 # alternative Modelle...
 
+
+# mit random effect
+m0.2 <- glmer(Stellung ~ Eigenname + (1 | doc),
+              data = gen,
+              family = binomial)
+
+anova(m, m0.2)
+anova(m0.1, m0.2)
+
+afex::mixed(Stellung ~ wordcount + Eigenname + (1 | doc),
+            data = gen, family = binomial, method = "LRT")
+
+
+# Modelldiagnostik: Somers' Dxy & index of concordance
+library(Hmisc)
+probs <-  1/(1+exp(-fitted(m0.2)))
+somers2(probs, as.numeric(gen$Stellung)-1)
 
 # oder als fixed effect?
 m1a <- glm(Stellung ~ wordcount + Eigenname + doc,
@@ -104,7 +102,7 @@ m1a <- glm(Stellung ~ wordcount + Eigenname + doc,
          family = binomial)
 summary(m1a)
 
-# oder mit interaktion?
+# oder mit Interaktion & random effect?
 m2 <- glmer(Stellung ~ wordcount * Eigenname + (1 | doc),
             data = gen,
             family = binomial)
