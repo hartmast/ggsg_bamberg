@@ -38,7 +38,7 @@ summary(m)
 
 
 
-# komplexeres Modell mit random effect
+# komplexeres Modell mit Eigenname + Dokument als zusaetzl. Effekte
 m1 <- glm(Stellung ~ wordcount + Eigenname + doc,
            data = gen,
            family = binomial)
@@ -95,16 +95,4 @@ afex::mixed(Stellung ~ wordcount + Eigenname + (1 | doc),
 library(Hmisc)
 probs <-  1/(1+exp(-fitted(m0.2)))
 somers2(probs, as.numeric(gen$Stellung)-1)
-
-# oder als fixed effect?
-m1a <- glm(Stellung ~ wordcount + Eigenname + doc,
-         data = gen,
-         family = binomial)
-summary(m1a)
-
-# oder mit Interaktion & random effect?
-m2 <- glmer(Stellung ~ wordcount * Eigenname + (1 | doc),
-            data = gen,
-            family = binomial)
-summary(m2)
 

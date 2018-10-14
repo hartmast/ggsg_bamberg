@@ -22,12 +22,14 @@ m00 <- lm(blooms ~ water.c + shade.c, data = t)
 
 
 # Modell mit Interaktion
-m01 <- lm(blooms ~ water.c + shade.c + water.c : shade.c, data = t) # aequivalent zu lm(blooms ~ water * shade, data = t)
+m01 <- lm(blooms ~ water.c + shade.c + water.c : shade.c, data = t) # aequivalent zu m03 <- lm(blooms ~ water.c * shade.c, data = t)
+m01b <- lm(blooms ~ water.c + shade.c + water.c:shade.c, data = t)
+m02 <- lm(blooms ~ water.c*shade.c, data = t)
 
 # vergleichen
 summary(m00)
 summary(m01)
-
+summary(m02)
 
 # Interaktion visualisieren
 library(visreg)
@@ -38,3 +40,14 @@ visreg(m00, "shade.c", by = "water.c") # gleiche Slope fuer alle!
 
 # Multikollinearitaet?
 car::vif(m01)
+
+# zum Vergleich manuell generierter
+# linkster Plot im Triptychon...
+shade.c <- seq(-1, 1, 0.1)
+water.c <- -1
+plot((-1 * shade.c), type = "l", ylim=c(-10,400))
+-1 * shade.c
+plot(128.99 + 75.8 * water.c + -41.6 * shade.c, ylim = c(-10, 300))
+
+water.c <- -1
+plot(128.99 + 75.8 * water.c + -41.6 * shade.c + -52.85 * (water.c * shade.c), ylim = c(0,300))
